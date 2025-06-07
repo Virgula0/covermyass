@@ -1,9 +1,10 @@
-package analysis
+package utils
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_byteCountSI(t *testing.T) {
@@ -20,7 +21,7 @@ func Test_byteCountSI(t *testing.T) {
 
 	for v, expected := range testcases {
 		t.Run(fmt.Sprintf("test with input %d", v), func(t *testing.T) {
-			assert.Equal(t, expected, byteCountSI(v))
+			assert.Equal(t, expected, ByteCountSI(v))
 		})
 	}
 }

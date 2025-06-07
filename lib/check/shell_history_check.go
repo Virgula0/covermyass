@@ -2,34 +2,78 @@ package check
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"os"
+	"path/filepath"
+
+	"github.com/sirupsen/logrus"
+	"github.com/sundowndev/covermyass/v2/utils"
 )
 
-type shellHistoryCheck struct{}
+type shellHistoryCheckLinux struct{}
+type shellHistoryCheckWindows struct{}
 
-func NewShellHistoryCheck() Check {
-	return &shellHistoryCheck{}
+func NewShellHistoryCheckLinux() Check {
+	return &shellHistoryCheckLinux{}
 }
 
-func (s *shellHistoryCheck) Name() string {
-	return "shell_history"
+func NewShellHistoryCheckWindows() Check {
+	return &shellHistoryCheckWindows{}
 }
 
-func (s *shellHistoryCheck) Paths() []string {
+func (s *shellHistoryCheckLinux) Name() string {
+	return "shell_history_linux"
+}
+
+func (s *shellHistoryCheckWindows) Name() string {
+	return "shell_history_windows"
+}
+
+func (s *shellHistoryCheckLinux) Paths() []string {
+	var paths []string
+
+	users := map[string]string{
+		"root": "/root",
+		"home": "/home/*",
+	}
+
+	suffixes := []string{
+		"/.bash_history",
+		"/.zsh_history",
+		"/.node_repl_history",
+		"/.python_history",
+		"/.mysql_history",
+	}
+
+	for _, prefix := range users {
+		for _, suf := range suffixes {
+			paths = append(paths, fmt.Sprintf("%s%s", prefix, suf))
+		}
+	}
+	return paths
+}
+
+func (s *shellHistoryCheckWindows) Paths() []string {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		logrus.Error(err)
 		return []string{}
 	}
+
 	return []string{
-		fmt.Sprintf("%s/.bash_history", homeDir),
-		fmt.Sprintf("%s/.zsh_history", homeDir),
-		fmt.Sprintf("%s/.node_repl_history", homeDir),
-		fmt.Sprintf("%s/.python_history", homeDir),
+		filepath.Join(homeDir, "AppData", "Roaming", "Microsoft", "Windows", "PowerShell", "PSReadLine", "ConsoleHost_history.txt"), // PowerShell
+		filepath.Join(homeDir, ".node_repl_history"),
+		filepath.Join(homeDir, ".python_history"),
+		filepath.Join(homeDir, ".bash_history"), // git bash saves it
 	}
 }
 
 func init() {
-	AddCheck(NewShellHistoryCheck())
+	// check windows
+	if utils.CurrentOS() == utils.Windows {
+		AddCheck(NewShellHistoryCheckWindows())
+		return
+	}
+
+	// otherwise linux
+	AddCheck(NewShellHistoryCheckLinux())
 }

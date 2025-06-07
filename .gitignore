@@ -22,3 +22,6 @@ coverage
 coverage.*
 unit-tests.xml
 .idea
+
+main
+main.exe

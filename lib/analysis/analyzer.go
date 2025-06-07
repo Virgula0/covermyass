@@ -2,14 +2,15 @@ package analysis
 
 import (
 	"context"
+	"sync"
+
 	"github.com/sirupsen/logrus"
+
 	"github.com/sundowndev/covermyass/v2/lib/check"
 	"github.com/sundowndev/covermyass/v2/lib/filter"
 	"github.com/sundowndev/covermyass/v2/lib/find"
 	"github.com/sundowndev/covermyass/v2/output"
-	"os"
-	"runtime"
-	"sync"
+	"github.com/sundowndev/covermyass/v2/utils"
 )
 
 type Analyzer struct {
@@ -20,14 +21,14 @@ type Analyzer struct {
 func NewAnalyzer(filterEngine filter.Filter) *Analyzer {
 	return &Analyzer{
 		filterEngine,
-		find.New(os.DirFS(""), filterEngine),
+		find.New(utils.RootFS(), filterEngine),
 	}
 }
 
 func (a *Analyzer) Analyze() (*Analysis, error) {
 	analysis := NewAnalysis()
 
-	output.Printf("Loaded known log files for %s\n", runtime.GOOS)
+	output.Printf("Loaded known log files for %s\n", utils.CurrentOS().Name)
 	output.Printf("Scanning file system...\n\n")
 
 	wg := &sync.WaitGroup{}

@@ -2,10 +2,12 @@ package analysis
 
 import (
 	"fmt"
-	"github.com/sundowndev/covermyass/v2/lib/check"
 	"io"
 	"os"
 	"time"
+
+	"github.com/sundowndev/covermyass/v2/lib/check"
+	"github.com/sundowndev/covermyass/v2/utils"
 )
 
 type Summary struct {
@@ -54,7 +56,7 @@ func (a *Analysis) Write(w io.Writer) {
 		_, _ = fmt.Fprintf(w, "Found the following files\n")
 
 		for _, res := range a.results {
-			_, _ = fmt.Fprintf(w, "%s (%s, %s)\n", res.Path, byteCountSI(res.Size), res.Mode.String())
+			_, _ = fmt.Fprintf(w, "%s (%s, %s)\n", res.Path, utils.ByteCountSI(res.Size), res.Mode.String())
 		}
 		_, _ = fmt.Fprintf(w, "\n")
 	}

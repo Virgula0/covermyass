@@ -16,6 +16,8 @@ func (s *httpServerCheck) Paths() []string {
 	return []string{
 		"/var/log/apache2/access.log*",
 		"/var/log/apache2/error_log*",
+		"/var/log/apache2/*/access.log",
+		"/var/log/apache2/*/error.log",
 		"/var/log/httpd*",
 		"/var/log/apache/access.log*",
 		"/var/log/apache/error.log*",

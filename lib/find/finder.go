@@ -3,13 +3,15 @@ package find
 import (
 	"context"
 	"fmt"
-	"github.com/bmatcuk/doublestar/v4"
-	"github.com/sirupsen/logrus"
-	"github.com/sundowndev/covermyass/v2/lib/filter"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/bmatcuk/doublestar/v4"
+	"github.com/sirupsen/logrus"
+	"github.com/sundowndev/covermyass/v2/lib/filter"
+	"github.com/sundowndev/covermyass/v2/utils"
 )
 
 type Finder interface {
@@ -46,9 +48,17 @@ func (f *finder) Run(ctx context.Context, paths []string) ([]FileInfo, error) {
 			continue
 		}
 
-		var formattedPattern string
-		if strings.Split(pattern, "")[0] == string(os.PathSeparator) {
+		var formattedPattern string = pattern
+		if utils.CurrentOS() == utils.Linux && strings.Split(pattern, "")[0] == string(os.PathSeparator) {
 			formattedPattern = strings.Join(strings.Split(pattern, "")[1:], "")
+		}
+
+		if current := utils.CurrentOS(); current == utils.Windows {
+			// windows
+			root := current.RootPath
+			rel := strings.TrimPrefix(formattedPattern, root)
+			rel = strings.TrimPrefix(rel, `\`)
+			formattedPattern = rel
 		}
 
 		// TODO(sundowndev): run this in a goroutine?
