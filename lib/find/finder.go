@@ -50,7 +50,6 @@ func (f *finder) Run(ctx context.Context, paths []string) ([]FileInfo, error) {
 
 		var formattedPattern string = pattern
 		if current := utils.CurrentOS(); strings.HasPrefix(pattern, current.RootPath) {
-			// formattedPattern = strings.Join(strings.Split(pattern, "")[1:], "")
 			rel := strings.TrimPrefix(formattedPattern, current.RootPath)
 			rel = strings.TrimPrefix(rel, `\`) // windows check
 			formattedPattern = rel
