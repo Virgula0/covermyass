@@ -15,6 +15,16 @@ type MachineOSInfo struct {
 var (
 	Windows = &MachineOSInfo{Name: "windows", RootPath: `C:\`}
 	Linux   = &MachineOSInfo{Name: "linux", RootPath: `/`}
+	Darwin  = &MachineOSInfo{Name: "darwin", RootPath: `/`}
+)
+
+var (
+	reg = map[string]*MachineOSInfo{
+		Windows.Name: Windows,
+		Linux.Name:   Linux,
+		Darwin.Name:  Darwin,
+	}
+	defaultOS = Linux
 )
 
 func ByteCountSI(b int64) string {
@@ -32,10 +42,10 @@ func ByteCountSI(b int64) string {
 }
 
 func CurrentOS() *MachineOSInfo {
-	if runtime.GOOS == Windows.Name {
-		return Windows
+	if info := reg[runtime.GOOS]; info != nil {
+		return info
 	}
-	return Linux
+	return defaultOS
 }
 
 func RootFS() fs.FS {

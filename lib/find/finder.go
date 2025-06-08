@@ -49,15 +49,10 @@ func (f *finder) Run(ctx context.Context, paths []string) ([]FileInfo, error) {
 		}
 
 		var formattedPattern string = pattern
-		if utils.CurrentOS() == utils.Linux && strings.Split(pattern, "")[0] == string(os.PathSeparator) {
-			formattedPattern = strings.Join(strings.Split(pattern, "")[1:], "")
-		}
-
-		if current := utils.CurrentOS(); current == utils.Windows {
-			// windows
-			root := current.RootPath
-			rel := strings.TrimPrefix(formattedPattern, root)
-			rel = strings.TrimPrefix(rel, `\`)
+		if current := utils.CurrentOS(); strings.HasPrefix(pattern, current.RootPath) {
+			// formattedPattern = strings.Join(strings.Split(pattern, "")[1:], "")
+			rel := strings.TrimPrefix(formattedPattern, current.RootPath)
+			rel = strings.TrimPrefix(rel, `\`) // windows check
 			formattedPattern = rel
 		}
 
