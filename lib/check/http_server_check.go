@@ -22,6 +22,7 @@ func (s *httpServerCheck) Paths() []string {
 		"/var/log/apache/access.log*",
 		"/var/log/apache/error.log*",
 		"/var/log/nginx/*.log*",
+		"/var/log/nginx/*/*.log*",
 	}
 }
 
