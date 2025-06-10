@@ -11,7 +11,7 @@ import (
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/sirupsen/logrus"
 	"github.com/sundowndev/covermyass/v2/lib/filter"
-	"github.com/sundowndev/covermyass/v2/utils"
+	"github.com/sundowndev/covermyass/v2/osutils"
 )
 
 type Finder interface {
@@ -49,7 +49,7 @@ func (f *finder) Run(ctx context.Context, paths []string) ([]FileInfo, error) {
 		}
 
 		var formattedPattern string = pattern
-		if current := utils.CurrentOS(); strings.HasPrefix(pattern, current.RootPath) {
+		if current := osutils.CurrentOS(); strings.HasPrefix(pattern, current.RootPath) {
 			rel := strings.TrimPrefix(formattedPattern, current.RootPath)
 			formattedPattern = rel
 		}

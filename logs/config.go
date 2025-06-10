@@ -1,9 +1,10 @@
 package logs
 
 import (
+	"os"
+
 	"github.com/sirupsen/logrus"
 	"github.com/sundowndev/covermyass/v2/build"
-	"os"
 )
 
 type Config struct {

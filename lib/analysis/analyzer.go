@@ -9,8 +9,8 @@ import (
 	"github.com/sundowndev/covermyass/v2/lib/check"
 	"github.com/sundowndev/covermyass/v2/lib/filter"
 	"github.com/sundowndev/covermyass/v2/lib/find"
+	"github.com/sundowndev/covermyass/v2/osutils"
 	"github.com/sundowndev/covermyass/v2/output"
-	"github.com/sundowndev/covermyass/v2/utils"
 )
 
 type Analyzer struct {
@@ -21,14 +21,14 @@ type Analyzer struct {
 func NewAnalyzer(filterEngine filter.Filter) *Analyzer {
 	return &Analyzer{
 		filterEngine,
-		find.New(utils.RootFS(), filterEngine),
+		find.New(osutils.RootFS(), filterEngine),
 	}
 }
 
 func (a *Analyzer) Analyze() (*Analysis, error) {
 	analysis := NewAnalysis()
 
-	output.Printf("Loaded known log files for %s\n", utils.CurrentOS().Name)
+	output.Printf("Loaded known log files for %s\n", osutils.CurrentOS().Name)
 	output.Printf("Scanning file system...\n\n")
 
 	wg := &sync.WaitGroup{}

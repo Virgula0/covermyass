@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/sundowndev/covermyass/v2/lib/check"
-	"github.com/sundowndev/covermyass/v2/utils"
 )
 
 type Summary struct {
@@ -56,7 +55,7 @@ func (a *Analysis) Write(w io.Writer) {
 		_, _ = fmt.Fprintf(w, "Found the following files\n")
 
 		for _, res := range a.results {
-			_, _ = fmt.Fprintf(w, "%s (%s, %s)\n", res.Path, utils.ByteCountSI(res.Size), res.Mode.String())
+			_, _ = fmt.Fprintf(w, "%s (%s, %s)\n", res.Path, byteCountSI(res.Size), res.Mode.String())
 		}
 		_, _ = fmt.Fprintf(w, "\n")
 	}
@@ -69,4 +68,18 @@ func (a *Analysis) Write(w io.Writer) {
 		a.summary.TotalFiles-a.summary.TotalRWFiles,
 		time.Since(a.Date).Round(time.Millisecond).String(),
 	)
+}
+
+func byteCountSI(b int64) string {
+	const unit = 1000
+	if b < unit {
+		return fmt.Sprintf("%d B", b)
+	}
+	div, exp := int64(unit), 0
+	for n := b / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %cB",
+		float64(b)/float64(div), "kMGTPE"[exp])
 }
