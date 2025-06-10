@@ -50,8 +50,7 @@ func (f *finder) Run(ctx context.Context, paths []string) ([]FileInfo, error) {
 
 		var formattedPattern string = pattern
 		if current := osutils.CurrentOS(); strings.HasPrefix(pattern, current.RootPath) {
-			rel := strings.TrimPrefix(formattedPattern, current.RootPath)
-			formattedPattern = rel
+			formattedPattern = strings.TrimPrefix(formattedPattern, current.RootPath)
 		}
 
 		// TODO(sundowndev): run this in a goroutine?
